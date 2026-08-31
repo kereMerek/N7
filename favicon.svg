@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <!-- Açık maviden karanlık gece mavisine geçiş (sitenin ışığıyla aynı) -->
+    <linearGradient id="blueGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#4B9CD3" /> 
+      <stop offset="100%" stop-color="#001F4D" /> 
+    </linearGradient>
+  </defs>
+  <!-- Kalp çizimi -->
+  <path d="M32 58.5s-23-17.5-23-33c0-8.5 6.5-14.5 14-14.5 5 0 9.5 3.5 11 8.5 1.5-5 6-8.5 11-8.5 7.5 0 14 6 14 14.5 0 15.5-23 33-23 33z" fill="url(#blueGradient)"/>
+</svg>

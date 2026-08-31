@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Özür Dilerim...</title>
+    <!-- Zarif font -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <style>
+        /* Temel Sıfırlama ve Zifiri Karanlık Arka Plan */
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000000;
+            overflow: hidden; 
+            font-family: 'Playfair Display', serif;
+            color: rgba(180, 180, 190, 0.95);
+        }
+
+        /* Yağmur Animasyonu İçin Canvas */
+        #rain-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none; 
+        }
+
+        /* Klostrofobik, ağır karartma efekti (Köşeler zifiri siyah) */
+        .vignette {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(0,0,0,0) 25%, rgba(0,0,0,0.98) 100%);
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        /* Dipten Vuran Bulanık, Hüzünlü Mavi Işık */
+        .bottom-glow {
+            position: absolute;
+            bottom: -15vh;
+            left: 0;
+            width: 100%;
+            height: 40vh;
+            background: radial-gradient(ellipse at bottom, rgba(0, 30, 90, 0.5) 0%, rgba(0, 0, 0, 0) 70%);
+            filter: blur(40px);
+            z-index: 3;
+            pointer-events: none;
+            animation: pulseGlow 5s infinite alternate ease-in-out;
+        }
+
+        @keyframes pulseGlow {
+            0% { opacity: 0.4; transform: scale(1); }
+            100% { opacity: 1; transform: scale(1.15); }
+        }
+
+        /* Mektup İçeriği - Doğrudan Görünür, Efektsiz */
+        .letter-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 4;
+            width: 90%;
+            max-width: 650px;
+            text-shadow: 0px 4px 25px rgba(0, 0, 0, 1), 0px 0px 10px rgba(0, 30, 90, 0.4);
+            max-height: 85vh; 
+            overflow-y: auto; 
+            padding: 10px 15px 10px 5px;
+            box-sizing: border-box;
+            
+            /* Gönderdiğin metnin boşluk ve satır atlamalarını koruması için */
+            white-space: pre-wrap; 
+            font-size: 1.15rem;
+            line-height: 1.9;
+            font-style: italic;
+            text-align: justify;
+            letter-spacing: 0.2px;
+        }
+
+        /* Scrollbar Gizleme */
+        .letter-content::-webkit-scrollbar {
+            width: 3px;
+        }
+        .letter-content::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+        }
+
+        /* Mobil Uyum */
+        @media screen and (max-width: 768px) {
+            .letter-content {
+                font-size: 1rem;
+                line-height: 1.7;
+                width: 92%; 
+                max-height: 90vh;
+            }
+            .bottom-glow {
+                height: 50vh;
+                bottom: -20vh;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="rain-canvas"></canvas>
+    <div class="vignette"></div>
+    <div class="bottom-glow"></div>
+    
+    <!-- Gönderdiğin metin hiçbir değişiklik yapılmadan yerleştirildi -->
+    <div class="letter-content">‎Abim var hemen gelicem diyip gelemedim sevgilim özür dilerim annemlerle yemek yerken yine aynı konuların tartışmaları yaşandı abim de sinirine yenik düşüp aşırı tepki gösterince her şey daha da büyüdü telefonu aldığım gibi sana haber vericektim ama sadece senle konuşmadan önce sakinlemek istedim ama yapamadım saat 11 gibi abimler yengemin annesine gittiler annemler de babannemlere gitti evde tek başıma kalınca onca yaşanan şeyi kaldıramadım ve ağladım yine sana sarıldığımı hayal ederek yastığıma sarılıp ağlamaktan başka bişey yapamadım seni saatlerce bekletip bilinmezlikte bıraktığım için çok ama çok özür dilerim sabah konuşken enerjin yüksekti bozmak istemedim yaşananları az da olsa anca şimdi sindirebildim fazla uyuyup seni çok fazla beklettiğim gerçekten çok ama çok özür dilerim seni her şeyden çok seviyorum nolur beni affet 🥺💙
+‎
+‎
+‎
+‎    -Seni her daim kalbinde saklayan Kerem....</div>
+
+    <script>
+        const canvas = document.getElementById('rain-canvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        const raindrops = [];
+        const isMobile = window.innerWidth < 768;
+        const rainCount = isMobile ? 200 : 450; 
+        const wind = 1.5; 
+
+        for(let i = 0; i < rainCount; i++) {
+            raindrops.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                length: Math.random() * 25 + 10, 
+                speed: Math.random() * 6 + 8,
+                opacity: Math.random() * 0.25 + 0.05
+            });
+        }
+
+        let lightningTimer = 0;
+
+        function drawRain() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.45)'; 
+            
+            if (Math.random() < 0.0015) { 
+                ctx.fillStyle = 'rgba(15, 25, 45, 0.85)'; 
+                lightningTimer = 6;
+            } else if (lightningTimer > 0) {
+                ctx.fillStyle = `rgba(15, 25, 45, ${lightningTimer * 0.15})`;
+                lightningTimer--;
+            }
+
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.lineWidth = 1;
+            
+            for(let i = 0; i < raindrops.length; i++) {
+                const drop = raindrops[i];
+                
+                ctx.strokeStyle = `rgba(160, 180, 210, ${drop.opacity})`; // Karamsar gri/mavi yağmur
+                
+                ctx.beginPath();
+                ctx.moveTo(drop.x, drop.y);
+                ctx.lineTo(drop.x + wind * (drop.length/10), drop.y + drop.length);
+                ctx.stroke();
+                
+                drop.y += drop.speed;
+                drop.x += wind * (drop.speed/10); 
+                
+                if(drop.y > canvas.height || drop.x > canvas.width) {
+                    drop.y = -drop.length;
+                    drop.x = Math.random() * canvas.width - (wind * 50); 
+                }
+            }
+            requestAnimationFrame(drawRain);
+        }
+
+        drawRain();
+    </script>
+</body>
+</html>
