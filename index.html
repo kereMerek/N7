@@ -86,6 +86,51 @@
             letter-spacing: 0.2px;
         }
 
+        .welcome-screen {
+            position: absolute;
+            inset: 0;
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            padding: 2rem;
+            box-sizing: border-box;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.72);
+        }
+
+        .welcome-screen[hidden] {
+            display: none;
+        }
+
+        .welcome-text {
+            width: min(100%, 650px);
+            margin: 0;
+            font-size: 1.15rem;
+            line-height: 1.9;
+            font-style: italic;
+            text-shadow: 0px 4px 25px rgba(0, 0, 0, 1), 0px 0px 10px rgba(0, 30, 90, 0.4);
+        }
+
+        .continue-button {
+            border: 1px solid rgba(180, 180, 190, 0.55);
+            border-radius: 999px;
+            padding: 0.75rem 1.5rem;
+            background: rgba(0, 30, 90, 0.35);
+            color: inherit;
+            font: inherit;
+            cursor: pointer;
+            transition: background-color 180ms ease, border-color 180ms ease;
+        }
+
+        .continue-button:hover,
+        .continue-button:focus-visible {
+            border-color: rgba(210, 220, 240, 0.9);
+            background: rgba(0, 45, 120, 0.6);
+        }
+
         /* Scrollbar Gizleme */
         .letter-content::-webkit-scrollbar {
             width: 3px;
@@ -103,6 +148,10 @@
                 width: 92%; 
                 max-height: 90vh;
             }
+            .welcome-text {
+                font-size: 1rem;
+                line-height: 1.7;
+            }
             .bottom-glow {
                 height: 50vh;
                 bottom: -20vh;
@@ -116,14 +165,29 @@
     <div class="vignette"></div>
     <div class="bottom-glow"></div>
     
+    <section class="welcome-screen" id="welcome-screen" aria-labelledby="welcome-text">
+        <p class="welcome-text" id="welcome-text">Yine ailemle gerçirdiğim berbat günlerden birisi daha o gün hemen gelicem diyip yaşanan kavgalardan dolayı gelememiştim. Annemler seni bilmiyolardı o dönem abim odama geldiğinde vesaire yazamıyodum mesajlarına bakamıyodum ama artık seni biliyolar hatta ayrı olduğumuzu da... Zaten onlara bişey demesem bile günlerdir yemek yiyemememden uyku uyuyamamdan yine bi şekil anlarlar. O gün yaşanan o olaylardan tartışmalardan sonra yine senden özür dilemek yaşananları anlatıp aslında belli etmemeye çalışsam da ne kadar kötü olduğumu anlatmak için yapmıştım bu siteyide. Baktıkça iyi mi hatırlıyosun yoksa kötümü bilmiyorum ama ben senin için yaptığım bütün her şeyi iyi hatırlamnı istiyorum....</p>
+        <button class="continue-button" id="continue-button" type="button" aria-controls="letter-content">Devam etmek için tıkla</button>
+    </section>
+
     <!-- Gönderdiğin metin hiçbir değişiklik yapılmadan yerleştirildi -->
-    <div class="letter-content">‎Abim var hemen gelicem diyip gelemedim sevgilim özür dilerim annemlerle yemek yerken yine aynı konuların tartışmaları yaşandı abim de sinirine yenik düşüp aşırı tepki gösterince her şey daha da büyüdü telefonu aldığım gibi sana haber vericektim ama sadece senle konuşmadan önce sakinlemek istedim ama yapamadım saat 11 gibi abimler yengemin annesine gittiler annemler de babannemlere gitti evde tek başıma kalınca onca yaşanan şeyi kaldıramadım ve ağladım yine sana sarıldığımı hayal ederek yastığıma sarılıp ağlamaktan başka bişey yapamadım seni saatlerce bekletip bilinmezlikte bıraktığım için çok ama çok özür dilerim sabah konuşken enerjin yüksekti bozmak istemedim yaşananları az da olsa anca şimdi sindirebildim fazla uyuyup seni çok fazla beklettiğim gerçekten çok ama çok özür dilerim seni her şeyden çok seviyorum nolur beni affet 🥺💙
+    <div class="letter-content" id="letter-content" tabindex="-1" hidden>‎Abim var hemen gelicem diyip gelemedim sevgilim özür dilerim annemlerle yemek yerken yine aynı konuların tartışmaları yaşandı abim de sinirine yenik düşüp aşırı tepki gösterince her şey daha da büyüdü telefonu aldığım gibi sana haber vericektim ama sadece senle konuşmadan önce sakinlemek istedim ama yapamadım saat 11 gibi abimler yengemin annesine gittiler annemler de babannemlere gitti evde tek başıma kalınca onca yaşanan şeyi kaldıramadım ve ağladım yine sana sarıldığımı hayal ederek yastığıma sarılıp ağlamaktan başka bişey yapamadım seni saatlerce bekletip bilinmezlikte bıraktığım için çok ama çok özür dilerim sabah konuşken enerjin yüksekti bozmak istemedim yaşananları az da olsa anca şimdi sindirebildim fazla uyuyup seni çok fazla beklettiğim gerçekten çok ama çok özür dilerim seni her şeyden çok seviyorum nolur beni affet 🥺💙
 ‎
 ‎
 ‎
 ‎    -Seni her daim kalbinde saklayan Kerem....</div>
 
     <script>
+        const welcomeScreen = document.getElementById('welcome-screen');
+        const continueButton = document.getElementById('continue-button');
+        const letterContent = document.getElementById('letter-content');
+
+        continueButton.addEventListener('click', () => {
+            welcomeScreen.hidden = true;
+            letterContent.hidden = false;
+            letterContent.focus();
+        });
+
         const canvas = document.getElementById('rain-canvas');
         const ctx = canvas.getContext('2d');
 
